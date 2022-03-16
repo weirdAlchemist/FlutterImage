@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterimage/imageviewer.dart';
-import 'package:flutterimage/libraryviewer.dart';
-import 'package:flutterimage/store.dart';
+import 'package:flutterimage/stores/imageStore.dart';
+import 'package:flutterimage/stores/libraryStore.dart';
+import 'package:flutterimage/widgets/imageviewer.dart';
+import 'package:flutterimage/widgets/libraryviewer.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -11,7 +11,8 @@ void main() {
     /// can use [MyApp] while mocking the providers
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ComicProvider()),
+        ChangeNotifierProvider(create: (_) => LibraryStore()),
+        ChangeNotifierProvider(create: (_) => ImageStore()),
       ],
       child: const MyApp(),
     ),
@@ -29,15 +30,16 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: "/",
+        initialRoute: "/libraryviewer",
         routes: {
-          "/": (context) => (context.watch<ComicProvider>().isInitialized)
-              ? LibraryViewer()
-              : Center(child: CircularProgressIndicator()),
+          "/libraryviewer": (context) =>
+              (context.watch<LibraryStore>().isInitialized)
+                  ? LibraryViewer()
+                  : const Center(child: CircularProgressIndicator()),
           "/imageviewer": (context) =>
-              (context.watch<ComicProvider>().isInitialized)
+              (context.watch<ImageStore>().isInitialized)
                   ? ImageViewer()
-                  : Center(child: CircularProgressIndicator())
+                  : const Center(child: CircularProgressIndicator())
         });
   }
 }
